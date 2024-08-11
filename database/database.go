@@ -19,7 +19,6 @@ func Initialize(cfg config.Config) *gorm.DB {
 		log.Fatalf("failed to connect database: %v", err)
 	}
 	db = database
-	log.Println("database: Initialized")
 
 	return db
 }
