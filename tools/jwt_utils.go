@@ -2,10 +2,10 @@ package tools
 
 import (
 	"errors"
+	"os"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
-	"github.com/tat-101/bb-assignment-back/config"
 )
 
 type Claims struct {
@@ -24,14 +24,14 @@ func GenerateJWT(email string) (string, error) {
 		},
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	return token.SignedString([]byte(config.GetJWTSecret()))
+	return token.SignedString([]byte(os.Getenv("JWT_SECRET")))
 }
 
 // ValidateJWT validates a given JWT token and returns the claims if valid.
 func ValidateJWT(tokenString string) (*Claims, error) {
 	claims := &Claims{}
 	token, err := jwt.ParseWithClaims(tokenString, claims, func(token *jwt.Token) (interface{}, error) {
-		return []byte(config.GetJWTSecret()), nil
+		return []byte(os.Getenv("JWT_SECRET")), nil
 	})
 
 	if err != nil {

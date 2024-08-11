@@ -10,10 +10,10 @@ import (
 
 var db *gorm.DB
 
-func Initialize() *gorm.DB {
+func Initialize(cfg config.Config) *gorm.DB {
 	config.LoadConfig()
 
-	dsn := config.GetDBConfig()
+	dsn := cfg.GetDBConfig()
 	database, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 		log.Fatalf("failed to connect database: %v", err)
