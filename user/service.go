@@ -8,11 +8,6 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-type LoginData struct {
-	Email    string `json:"email"`
-	Password string `json:"password"`
-}
-
 //go:generate mockery --name UserRepository
 type UserRepository interface {
 	CreateUser(user *domain.User) error
@@ -22,8 +17,6 @@ type UserRepository interface {
 	GetUserByEmail(email string) (*domain.User, error)
 	UpdateUserByID(id string, updatedUser domain.User) error
 	DeleteUserByID(id string) error
-
-	AuthenticateUser(email, password string) (*domain.User, error)
 }
 
 type Service struct {
@@ -65,13 +58,13 @@ func (s *Service) DeleteUserByID(id string) error {
 	return s.userRepo.DeleteUserByID(id)
 }
 
-func (s *Service) AuthenticateUser(loginData LoginData) (string, error) {
-	user, err := s.userRepo.GetUserByEmail(loginData.Email)
+func (s *Service) AuthenticateUser(email, password string) (string, error) {
+	user, err := s.userRepo.GetUserByEmail(email)
 	if err != nil {
 		return "", errors.New("invalid credentials")
 	}
 
-	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(loginData.Password)); err != nil {
+	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password)); err != nil {
 		return "", errors.New("invalid credentials")
 	}
 

@@ -102,10 +102,8 @@ func TestService_AuthenticateUser(t *testing.T) {
 	mockUserRepo := new(mocks.UserRepository)
 	service := user.NewService(mockUserRepo)
 
-	loginData := user.LoginData{
-		Email:    "user@example.com",
-		Password: "password123",
-	}
+	email := "user"
+	password := "password123"
 
 	hashedPassword, _ := bcrypt.GenerateFromPassword([]byte("password123"), bcrypt.DefaultCost)
 	expectedUser := &domain.User{
@@ -113,9 +111,9 @@ func TestService_AuthenticateUser(t *testing.T) {
 		Password: string(hashedPassword),
 	}
 
-	mockUserRepo.On("GetUserByEmail", loginData.Email).Return(expectedUser, nil)
+	mockUserRepo.On("GetUserByEmail", email).Return(expectedUser, nil)
 
-	token, err := service.AuthenticateUser(loginData)
+	token, err := service.AuthenticateUser(email, password)
 
 	assert.NoError(t, err)
 	assert.NotEmpty(t, token)

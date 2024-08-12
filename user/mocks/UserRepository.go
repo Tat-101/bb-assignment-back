@@ -20,65 +20,6 @@ func (_m *UserRepository) EXPECT() *UserRepository_Expecter {
 	return &UserRepository_Expecter{mock: &_m.Mock}
 }
 
-// AuthenticateUser provides a mock function with given fields: email, password
-func (_m *UserRepository) AuthenticateUser(email string, password string) (*domain.User, error) {
-	ret := _m.Called(email, password)
-
-	if len(ret) == 0 {
-		panic("no return value specified for AuthenticateUser")
-	}
-
-	var r0 *domain.User
-	var r1 error
-	if rf, ok := ret.Get(0).(func(string, string) (*domain.User, error)); ok {
-		return rf(email, password)
-	}
-	if rf, ok := ret.Get(0).(func(string, string) *domain.User); ok {
-		r0 = rf(email, password)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*domain.User)
-		}
-	}
-
-	if rf, ok := ret.Get(1).(func(string, string) error); ok {
-		r1 = rf(email, password)
-	} else {
-		r1 = ret.Error(1)
-	}
-
-	return r0, r1
-}
-
-// UserRepository_AuthenticateUser_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'AuthenticateUser'
-type UserRepository_AuthenticateUser_Call struct {
-	*mock.Call
-}
-
-// AuthenticateUser is a helper method to define mock.On call
-//   - email string
-//   - password string
-func (_e *UserRepository_Expecter) AuthenticateUser(email interface{}, password interface{}) *UserRepository_AuthenticateUser_Call {
-	return &UserRepository_AuthenticateUser_Call{Call: _e.mock.On("AuthenticateUser", email, password)}
-}
-
-func (_c *UserRepository_AuthenticateUser_Call) Run(run func(email string, password string)) *UserRepository_AuthenticateUser_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(string), args[1].(string))
-	})
-	return _c
-}
-
-func (_c *UserRepository_AuthenticateUser_Call) Return(_a0 *domain.User, _a1 error) *UserRepository_AuthenticateUser_Call {
-	_c.Call.Return(_a0, _a1)
-	return _c
-}
-
-func (_c *UserRepository_AuthenticateUser_Call) RunAndReturn(run func(string, string) (*domain.User, error)) *UserRepository_AuthenticateUser_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
 // CreateUser provides a mock function with given fields: _a0
 func (_m *UserRepository) CreateUser(_a0 *domain.User) error {
 	ret := _m.Called(_a0)

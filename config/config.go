@@ -37,7 +37,7 @@ func LoadConfig() Config {
 		DBPassword:    getEnv("DB_PASSWORD", ""),
 		DBName:        getEnv("DB_NAME", "mydb"),
 		DBPort:        getEnv("DB_PORT", "5432"),
-		ServerAddress: getEnv("SERVER_ADDRESS", ":8080"),
+		ServerAddress: getEnv("SERVER_ADDRESS", "8080"),
 		JWTSecret:     getEnv("JWT_SECRET", ""),
 	}
 }
