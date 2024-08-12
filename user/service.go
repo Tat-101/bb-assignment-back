@@ -15,7 +15,7 @@ type UserRepository interface {
 	GetAllUsers() ([]domain.User, error)
 	GetUserByID(id uint) (*domain.User, error)
 	GetUserByEmail(email string) (*domain.User, error)
-	UpdateUserByID(id string, updatedUser domain.User) error
+	UpdateUserByID(id string, updatedUser domain.User) (*domain.User, error)
 	DeleteUserByID(id string) error
 }
 
@@ -49,7 +49,7 @@ func (s *Service) GetUserByEmail(email string) (*domain.User, error) {
 }
 
 // UpdateUserByID updates a user's information by their ID in the repository
-func (s *Service) UpdateUserByID(id string, updatedUser domain.User) error {
+func (s *Service) UpdateUserByID(id string, updatedUser domain.User) (*domain.User, error) {
 	return s.userRepo.UpdateUserByID(id, updatedUser)
 }
 

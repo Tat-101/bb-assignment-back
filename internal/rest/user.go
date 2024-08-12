@@ -86,11 +86,13 @@ func (h *UserHandler) UpdateUserByID(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	if err := h.Service.UpdateUserByID(id, user); err != nil {
+
+	updatedUser, err := h.Service.UpdateUserByID(id, user)
+	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	c.JSON(http.StatusOK, dto.FromUserEntity(&user))
+	c.JSON(http.StatusOK, dto.FromUserEntity(updatedUser))
 }
 
 func (h *UserHandler) DeleteUserByID(c *gin.Context) {

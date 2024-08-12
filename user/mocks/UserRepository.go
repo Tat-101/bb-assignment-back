@@ -286,21 +286,33 @@ func (_c *UserRepository_GetUserByID_Call) RunAndReturn(run func(uint) (*domain.
 }
 
 // UpdateUserByID provides a mock function with given fields: id, updatedUser
-func (_m *UserRepository) UpdateUserByID(id string, updatedUser domain.User) error {
+func (_m *UserRepository) UpdateUserByID(id string, updatedUser domain.User) (*domain.User, error) {
 	ret := _m.Called(id, updatedUser)
 
 	if len(ret) == 0 {
 		panic("no return value specified for UpdateUserByID")
 	}
 
-	var r0 error
-	if rf, ok := ret.Get(0).(func(string, domain.User) error); ok {
+	var r0 *domain.User
+	var r1 error
+	if rf, ok := ret.Get(0).(func(string, domain.User) (*domain.User, error)); ok {
+		return rf(id, updatedUser)
+	}
+	if rf, ok := ret.Get(0).(func(string, domain.User) *domain.User); ok {
 		r0 = rf(id, updatedUser)
 	} else {
-		r0 = ret.Error(0)
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*domain.User)
+		}
 	}
 
-	return r0
+	if rf, ok := ret.Get(1).(func(string, domain.User) error); ok {
+		r1 = rf(id, updatedUser)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
 }
 
 // UserRepository_UpdateUserByID_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'UpdateUserByID'
@@ -322,12 +334,12 @@ func (_c *UserRepository_UpdateUserByID_Call) Run(run func(id string, updatedUse
 	return _c
 }
 
-func (_c *UserRepository_UpdateUserByID_Call) Return(_a0 error) *UserRepository_UpdateUserByID_Call {
-	_c.Call.Return(_a0)
+func (_c *UserRepository_UpdateUserByID_Call) Return(_a0 *domain.User, _a1 error) *UserRepository_UpdateUserByID_Call {
+	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *UserRepository_UpdateUserByID_Call) RunAndReturn(run func(string, domain.User) error) *UserRepository_UpdateUserByID_Call {
+func (_c *UserRepository_UpdateUserByID_Call) RunAndReturn(run func(string, domain.User) (*domain.User, error)) *UserRepository_UpdateUserByID_Call {
 	_c.Call.Return(run)
 	return _c
 }

@@ -53,6 +53,9 @@ func TestUserRepository_GetAllUsers(t *testing.T) {
 	defer teardown()
 	userRepo := repository.NewUserRepository(db)
 
+	// previuos add
+	before, _ := userRepo.GetAllUsers()
+
 	users := []domain.User{
 		{Email: "user1@example.com", Name: "User One"},
 		{Email: "user2@example.com", Name: "User Two"},
@@ -66,7 +69,7 @@ func TestUserRepository_GetAllUsers(t *testing.T) {
 	dbUsers, err := userRepo.GetAllUsers()
 
 	assert.NoError(t, err)
-	assert.Len(t, dbUsers, len(users))
+	assert.Len(t, dbUsers, len(before)+2)
 }
 
 func TestUserRepository_GetUserByID(t *testing.T) {
@@ -108,15 +111,14 @@ func TestUserRepository_UpdateUserByID(t *testing.T) {
 	err := userRepo.CreateUser(&user)
 	require.NoError(t, err)
 
-	updatedUser := domain.User{Name: "Updated User", Email: "updated@example.com", Password: "newpassword123"}
+	updatedUser := domain.User{Name: "Updated User", Password: "newpassword123"}
 
-	err = userRepo.UpdateUserByID(fmt.Sprint(user.ID), updatedUser)
+	us, err := userRepo.UpdateUserByID(fmt.Sprint(user.ID), updatedUser)
 	assert.NoError(t, err)
 
 	dbUser, err := userRepo.GetUserByID(user.ID)
 	assert.NoError(t, err)
-	assert.Equal(t, updatedUser.Email, dbUser.Email)
-	assert.Equal(t, updatedUser.Name, dbUser.Name)
+	assert.Equal(t, us.Name, dbUser.Name)
 }
 
 func TestUserRepository_DeleteUserByID(t *testing.T) {

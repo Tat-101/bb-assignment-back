@@ -8,7 +8,7 @@ type UserService interface {
 	GetAllUsers() ([]domain.User, error)
 	GetUserByID(id uint) (*domain.User, error)
 	GetUserByEmail(email string) (*domain.User, error)
-	UpdateUserByID(id string, updatedUser domain.User) error
+	UpdateUserByID(id string, updatedUser domain.User) (*domain.User, error)
 	DeleteUserByID(id string) error
 
 	AuthenticateUser(email, password string) (string, error)

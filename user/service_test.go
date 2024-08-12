@@ -80,11 +80,12 @@ func TestService_UpdateUserByID(t *testing.T) {
 
 	updatedUser := domain.User{Email: "updated@example.com", Name: "Updated User"}
 
-	mockUserRepo.On("UpdateUserByID", "1", updatedUser).Return(nil)
+	mockUserRepo.On("UpdateUserByID", "1", updatedUser).Return(&updatedUser, nil)
 
-	err := service.UpdateUserByID("1", updatedUser)
+	newUser, err := service.UpdateUserByID("1", updatedUser)
 
 	assert.NoError(t, err)
+	assert.Equal(t, newUser.Name, updatedUser.Name)
 	mockUserRepo.AssertExpectations(t)
 }
 

@@ -2,6 +2,7 @@ package repository
 
 import (
 	"github.com/tat-101/bb-assignment-back/domain"
+	"github.com/tat-101/bb-assignment-back/tools"
 	"gorm.io/gorm"
 )
 
@@ -39,20 +40,20 @@ func (r *UserRepository) GetUserByEmail(email string) (*domain.User, error) {
 	return &user, nil
 }
 
-func (r *UserRepository) UpdateUserByID(id string, updatedUser domain.User) error {
+func (r *UserRepository) UpdateUserByID(id string, updatedUser domain.User) (*domain.User, error) {
 	var user domain.User
 	if err := r.DB.First(&user, id).Error; err != nil {
-		return err
+		return nil, err
 	}
-	user.Name = updatedUser.Name
-	user.Email = updatedUser.Email
+	user.Name = tools.Coalesce(updatedUser.Name, user.Name)
 	if updatedUser.Password != "" {
 		user.Password = updatedUser.Password
 		if err := user.HashPassword(); err != nil {
-			return err
+			return nil, err
 		}
 	}
-	return r.DB.Save(&user).Error
+
+	return &user, r.DB.Save(&user).Error
 }
 
 func (r *UserRepository) DeleteUserByID(id string) error {

@@ -13,6 +13,7 @@ type User struct {
 	Password  string    `gorm:"size:255"`
 	Role      string    `gorm:"size:50"` // "admin" or "user"
 	CreatedAt time.Time `gorm:"autoCreateTime"`
+	UpdatedAt time.Time `gorm:"autoUpdateTime"`
 }
 
 func (user *User) HashPassword() error {
