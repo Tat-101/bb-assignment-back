@@ -4,33 +4,25 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/tat-101/bb-assignment-back/domain"
+	"github.com/tat-101/bb-assignment-back/internal/rest/middleware"
+	"github.com/tat-101/bb-assignment-back/internal/rest/service"
 )
 
-//go:generate mockery --name UserService
-type UserService interface {
-	CreateUser(user *domain.User) error
-	GetAllUsers() ([]domain.User, error)
-	GetUserByID(id uint) (*domain.User, error)
-	GetUserByEmail(email string) (*domain.User, error)
-	UpdateUserByID(id string, updatedUser domain.User) error
-	DeleteUserByID(id string) error
-
-	AuthenticateUser(email, password string) (string, error)
-}
-
 type UserHandler struct {
-	Service UserService
+	Service service.UserService
 }
 
-func NewUserHandler(r *gin.Engine, svc UserService) {
+func NewUserHandler(r *gin.Engine, svc service.UserService) {
 	handler := &UserHandler{
 		Service: svc,
 	}
 
+	authMiddleware := middleware.AuthMiddleware(svc)
 	userRoutes := r.Group("/users")
 	{
 		userRoutes.GET("", handler.GetUsers)
+
+		userRoutes.DELETE("/:id", authMiddleware, handler.GetUsers)
 	}
 }
 

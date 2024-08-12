@@ -75,3 +75,17 @@ func (s *Service) AuthenticateUser(email, password string) (string, error) {
 
 	return token, nil
 }
+
+func (s *Service) ValidateToken(token string) (*domain.User, error) {
+	claims, err := tools.ValidateJWT(token)
+	if err != nil {
+		return nil, errors.New("invalid token")
+	}
+
+	user, err := s.userRepo.GetUserByEmail(claims.Email)
+	if err != nil {
+		return nil, errors.New("user not found")
+	}
+
+	return user, nil
+}

@@ -1,10 +1,12 @@
 package user_test
 
 import (
+	"errors"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/tat-101/bb-assignment-back/domain"
+	"github.com/tat-101/bb-assignment-back/tools"
 	"github.com/tat-101/bb-assignment-back/user"
 	"github.com/tat-101/bb-assignment-back/user/mocks"
 	"golang.org/x/crypto/bcrypt"
@@ -117,5 +119,59 @@ func TestService_AuthenticateUser(t *testing.T) {
 
 	assert.NoError(t, err)
 	assert.NotEmpty(t, token)
+	mockUserRepo.AssertExpectations(t)
+}
+
+// TODO: AuthenticateUser fail case
+
+func TestService_ValidateToken_Success(t *testing.T) {
+	mockUserRepo := new(mocks.UserRepository)
+	service := user.NewService(mockUserRepo)
+
+	email := "test@example.com"
+	token, err := tools.GenerateJWT(email)
+	// fmt.Println("token", token)
+
+	assert.NoError(t, err)
+
+	expectedUser := &domain.User{
+		Email: email,
+		Name:  "Test User",
+	}
+
+	mockUserRepo.On("GetUserByEmail", email).Return(expectedUser, nil)
+
+	user, err := service.ValidateToken(token)
+
+	assert.NoError(t, err)
+	assert.Equal(t, expectedUser, user)
+	mockUserRepo.AssertExpectations(t)
+}
+
+func TestService_ValidateToken_InvalidToken(t *testing.T) {
+	mockUserRepo := new(mocks.UserRepository)
+	service := user.NewService(mockUserRepo)
+
+	user, err := service.ValidateToken("invalidToken")
+
+	assert.Error(t, err)
+	assert.Nil(t, user)
+	assert.Equal(t, "invalid token", err.Error())
+}
+
+func TestService_ValidateToken_UserNotFound(t *testing.T) {
+	mockUserRepo := new(mocks.UserRepository)
+	service := user.NewService(mockUserRepo)
+
+	email := "notfound@example.com"
+	token, _ := tools.GenerateJWT(email)
+
+	mockUserRepo.On("GetUserByEmail", email).Return(nil, errors.New("user not found"))
+
+	user, err := service.ValidateToken(token)
+
+	assert.Error(t, err)
+	assert.Nil(t, user)
+	assert.Equal(t, "user not found", err.Error())
 	mockUserRepo.AssertExpectations(t)
 }

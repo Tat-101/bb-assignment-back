@@ -21,24 +21,22 @@ func (_m *UserService) EXPECT() *UserService_Expecter {
 }
 
 // AuthenticateUser provides a mock function with given fields: email, password
-func (_m *UserService) AuthenticateUser(email string, password string) (*domain.User, error) {
+func (_m *UserService) AuthenticateUser(email string, password string) (string, error) {
 	ret := _m.Called(email, password)
 
 	if len(ret) == 0 {
 		panic("no return value specified for AuthenticateUser")
 	}
 
-	var r0 *domain.User
+	var r0 string
 	var r1 error
-	if rf, ok := ret.Get(0).(func(string, string) (*domain.User, error)); ok {
+	if rf, ok := ret.Get(0).(func(string, string) (string, error)); ok {
 		return rf(email, password)
 	}
-	if rf, ok := ret.Get(0).(func(string, string) *domain.User); ok {
+	if rf, ok := ret.Get(0).(func(string, string) string); ok {
 		r0 = rf(email, password)
 	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*domain.User)
-		}
+		r0 = ret.Get(0).(string)
 	}
 
 	if rf, ok := ret.Get(1).(func(string, string) error); ok {
@@ -69,12 +67,12 @@ func (_c *UserService_AuthenticateUser_Call) Run(run func(email string, password
 	return _c
 }
 
-func (_c *UserService_AuthenticateUser_Call) Return(_a0 *domain.User, _a1 error) *UserService_AuthenticateUser_Call {
+func (_c *UserService_AuthenticateUser_Call) Return(_a0 string, _a1 error) *UserService_AuthenticateUser_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *UserService_AuthenticateUser_Call) RunAndReturn(run func(string, string) (*domain.User, error)) *UserService_AuthenticateUser_Call {
+func (_c *UserService_AuthenticateUser_Call) RunAndReturn(run func(string, string) (string, error)) *UserService_AuthenticateUser_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -387,6 +385,64 @@ func (_c *UserService_UpdateUserByID_Call) Return(_a0 error) *UserService_Update
 }
 
 func (_c *UserService_UpdateUserByID_Call) RunAndReturn(run func(string, domain.User) error) *UserService_UpdateUserByID_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// ValidateToken provides a mock function with given fields: token
+func (_m *UserService) ValidateToken(token string) (*domain.User, error) {
+	ret := _m.Called(token)
+
+	if len(ret) == 0 {
+		panic("no return value specified for ValidateToken")
+	}
+
+	var r0 *domain.User
+	var r1 error
+	if rf, ok := ret.Get(0).(func(string) (*domain.User, error)); ok {
+		return rf(token)
+	}
+	if rf, ok := ret.Get(0).(func(string) *domain.User); ok {
+		r0 = rf(token)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*domain.User)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(string) error); ok {
+		r1 = rf(token)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// UserService_ValidateToken_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ValidateToken'
+type UserService_ValidateToken_Call struct {
+	*mock.Call
+}
+
+// ValidateToken is a helper method to define mock.On call
+//   - token string
+func (_e *UserService_Expecter) ValidateToken(token interface{}) *UserService_ValidateToken_Call {
+	return &UserService_ValidateToken_Call{Call: _e.mock.On("ValidateToken", token)}
+}
+
+func (_c *UserService_ValidateToken_Call) Run(run func(token string)) *UserService_ValidateToken_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(string))
+	})
+	return _c
+}
+
+func (_c *UserService_ValidateToken_Call) Return(_a0 *domain.User, _a1 error) *UserService_ValidateToken_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *UserService_ValidateToken_Call) RunAndReturn(run func(string) (*domain.User, error)) *UserService_ValidateToken_Call {
 	_c.Call.Return(run)
 	return _c
 }
