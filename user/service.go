@@ -35,6 +35,7 @@ func (s *Service) GetAllUsers() ([]domain.User, error) {
 
 // CreateUser creates a new user in the repository
 func (s *Service) CreateUser(user *domain.User) error {
+	user.HashPassword()
 	return s.userRepo.CreateUser(user)
 }
 
