@@ -27,7 +27,9 @@ func LoadConfig() Config {
 		if err != nil {
 			log.Printf("Error loading .env file %v", err)
 			if failCount > 10 {
-				os.Exit(-1)
+				// os.Exit(-1)
+				// TODO: for test
+				break
 			}
 		}
 		if err == nil {
@@ -40,12 +42,12 @@ func LoadConfig() Config {
 
 	return Config{
 		DBHost:        getEnv("DB_HOST", "localhost"),
-		DBUser:        getEnv("DB_USER", "root"),
-		DBPassword:    getEnv("DB_PASSWORD", ""),
-		DBName:        getEnv("DB_NAME", "mydb"),
+		DBUser:        getEnv("DB_USER", "postgres"),
+		DBPassword:    getEnv("DB_PASSWORD", "password"),
+		DBName:        getEnv("DB_NAME", "bb-assignment"),
 		DBPort:        getEnv("DB_PORT", "5432"),
-		ServerAddress: getEnv("SERVER_ADDRESS", "8080"),
-		JWTSecret:     getEnv("JWT_SECRET", ""),
+		ServerAddress: getEnv("SERVER_ADDRESS", "3000"),
+		JWTSecret:     getEnv("JWT_SECRET", "my_secret"),
 	}
 }
 
