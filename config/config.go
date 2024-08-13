@@ -27,9 +27,7 @@ func LoadConfig() Config {
 		if err != nil {
 			log.Printf("Error loading .env file %v", err)
 			if failCount > 10 {
-				// os.Exit(-1)
-				// TODO: for test
-				break
+				os.Exit(-1)
 			}
 		}
 		if err == nil {

@@ -35,12 +35,16 @@ jobs:
       - name: Install dependencies
         run: go mod download
 
+      - name: "Create env file"
+        run: |
+          touch .env
+          echo DB_HOST=localhost >> .env
+          echo DB_USER=postgres >> .env
+          echo DB_PASSWORD=password >> .env
+          echo DB_NAME=bb-assignment >> .env
+          cat .env
+
       - name: Run tests
-        env:
-          DB_HOST: localhost
-          DB_USER: postgres
-          DB_PASSWORD: password
-          DB_NAME: bb-assignment
         run: go test ./...
 
   # build:
