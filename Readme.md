@@ -1,3 +1,5 @@
+[![codecov](https://codecov.io/github/Tat-101/bb-assignment-back/graph/badge.svg?token=A6A0INM06I)](https://codecov.io/github/Tat-101/bb-assignment-back)
+
 # BB Assignment - Backend Application
 
 This repository contains the backend application for the "BB Assignment". This project is built using Go and provides the necessary API endpoints for managing users in the system.
