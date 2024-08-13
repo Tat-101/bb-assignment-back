@@ -1,3 +1,4 @@
+# TODO: hot reload
 services:
   db:
     image: postgres:latest
