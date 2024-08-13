@@ -16,8 +16,8 @@ type UserHandler struct {
 }
 
 type LoginData struct {
-	Email    string `json:"email"`
-	Password string `json:"password"`
+	Email    string `json:"email" binding:"required"`
+	Password string `json:"password" binding:"required"`
 }
 
 func NewUserHandler(r *gin.Engine, svc service.UserService) {
@@ -87,6 +87,10 @@ func (h *UserHandler) UpdateUserByID(c *gin.Context) {
 		return
 	}
 
+	// for test update user
+	tempId, _ := strconv.ParseUint(id, 10, 32)
+	user.ID = uint(tempId)
+
 	updatedUser, err := h.Service.UpdateUserByID(id, user)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
@@ -113,7 +117,6 @@ func (h *UserHandler) LoginUser(c *gin.Context) {
 
 	token, err := h.Service.AuthenticateUser(loginData.Email, loginData.Password)
 	if err != nil {
-		// fmt.Println("22222222")
 		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
 		return
 	}
