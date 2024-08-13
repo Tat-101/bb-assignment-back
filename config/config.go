@@ -3,7 +3,6 @@ package config
 import (
 	"log"
 	"os"
-	"regexp"
 
 	"github.com/joho/godotenv"
 )
@@ -20,15 +19,23 @@ type Config struct {
 
 // LoadEnv loads env vars from .env
 func LoadConfig() Config {
-	re := regexp.MustCompile(`^(.*` + "bb-assignment-back" + `)`)
-	cwd, _ := os.Getwd()
-	rootPath := re.Find([]byte(cwd))
-
-	err := godotenv.Load(string(rootPath) + `/.env`)
-	if err != nil {
-
-		log.Fatalf("Error loading .env file %v", err)
-		os.Exit(-1)
+	// FIXME: wtf
+	path := ".env"
+	failCount := 0
+	for {
+		err := godotenv.Load(path)
+		if err != nil {
+			log.Printf("Error loading .env file %v", err)
+			if failCount > 10 {
+				os.Exit(-1)
+			}
+		}
+		if err == nil {
+			// log.Println("path", path)
+			break
+		}
+		path = "../" + path
+		failCount++
 	}
 
 	return Config{
