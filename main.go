@@ -10,6 +10,7 @@ import (
 	"github.com/tat-101/bb-assignment-back/user"
 )
 
+// TODO: improve log
 func main() {
 	cfg := config.LoadConfig()
 
