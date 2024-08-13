@@ -20,7 +20,7 @@ func (r *UserRepository) CreateUser(user *domain.User) error {
 
 func (r *UserRepository) GetAllUsers() ([]domain.User, error) {
 	var users []domain.User
-	err := r.DB.Find(&users).Error
+	err := r.DB.Order("id desc").Find(&users).Error
 	return users, err
 }
 

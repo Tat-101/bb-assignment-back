@@ -1,6 +1,9 @@
 package main
 
 import (
+	"time"
+
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/tat-101/bb-assignment-back/config"
 	"github.com/tat-101/bb-assignment-back/database"
@@ -24,6 +27,15 @@ func main() {
 	userRepo := repository.NewUserRepository(db)
 
 	r := gin.Default()
+	r.Use(cors.New(cors.Config{
+		AllowOrigins:     []string{"http://localhost:*"},
+		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE"},
+		AllowHeaders:     []string{"Content-Type", "Authorization"},
+		ExposeHeaders:    []string{"Content-Length"},
+		AllowCredentials: true,
+		AllowWildcard:    true,
+		MaxAge:           12 * time.Hour,
+	}))
 
 	userService := user.NewService(userRepo)
 	rest.NewUserHandler(r, userService)
