@@ -24,11 +24,10 @@ func LoadConfig() Config {
 	failCount := 0
 	for {
 		err := godotenv.Load(path)
-		if err != nil {
+		if err != nil && failCount > 10 {
+			// log.Printf("Error loading .env file %v", err)
 			log.Printf("Error loading .env file %v", err)
-			if failCount > 10 {
-				os.Exit(-1)
-			}
+			os.Exit(-1)
 		}
 		if err == nil {
 			// log.Println("path", path)
