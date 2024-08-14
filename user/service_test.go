@@ -8,12 +8,12 @@ import (
 	"github.com/tat-101/bb-assignment-back/domain"
 	"github.com/tat-101/bb-assignment-back/tools"
 	"github.com/tat-101/bb-assignment-back/user"
+	"github.com/tat-101/bb-assignment-back/user/mocks"
 	"golang.org/x/crypto/bcrypt"
 )
 
 func TestService_GetAllUsers(t *testing.T) {
-	// mockUserRepo := new(mocks.UserRepository)
-	mockUserRepo := user.NewMockUserRepository(t)
+	mockUserRepo := new(mocks.UserRepository)
 	service := user.NewService(mockUserRepo)
 
 	expectedUsers := []domain.User{
@@ -31,7 +31,7 @@ func TestService_GetAllUsers(t *testing.T) {
 }
 
 func TestService_CreateUser(t *testing.T) {
-	mockUserRepo := user.NewMockUserRepository(t)
+	mockUserRepo := new(mocks.UserRepository)
 	service := user.NewService(mockUserRepo)
 
 	newUser := &domain.User{Email: "newuser@example.com", Name: "New User"}
@@ -45,7 +45,7 @@ func TestService_CreateUser(t *testing.T) {
 }
 
 func TestService_GetUserByID(t *testing.T) {
-	mockUserRepo := user.NewMockUserRepository(t)
+	mockUserRepo := new(mocks.UserRepository)
 	service := user.NewService(mockUserRepo)
 
 	expectedUser := &domain.User{ID: 1, Email: "user@example.com", Name: "User One"}
@@ -60,7 +60,7 @@ func TestService_GetUserByID(t *testing.T) {
 }
 
 func TestService_GetUserByEmail(t *testing.T) {
-	mockUserRepo := user.NewMockUserRepository(t)
+	mockUserRepo := new(mocks.UserRepository)
 	service := user.NewService(mockUserRepo)
 
 	expectedUser := &domain.User{Email: "user@example.com", Name: "User One"}
@@ -75,7 +75,7 @@ func TestService_GetUserByEmail(t *testing.T) {
 }
 
 func TestService_UpdateUserByID(t *testing.T) {
-	mockUserRepo := user.NewMockUserRepository(t)
+	mockUserRepo := new(mocks.UserRepository)
 	service := user.NewService(mockUserRepo)
 
 	updatedUser := domain.User{Email: "updated@example.com", Name: "Updated User"}
@@ -90,7 +90,7 @@ func TestService_UpdateUserByID(t *testing.T) {
 }
 
 func TestService_DeleteUserByID(t *testing.T) {
-	mockUserRepo := user.NewMockUserRepository(t)
+	mockUserRepo := new(mocks.UserRepository)
 	service := user.NewService(mockUserRepo)
 
 	mockUserRepo.On("DeleteUserByID", "1").Return(nil)
@@ -102,7 +102,7 @@ func TestService_DeleteUserByID(t *testing.T) {
 }
 
 func TestService_AuthenticateUser(t *testing.T) {
-	mockUserRepo := user.NewMockUserRepository(t)
+	mockUserRepo := new(mocks.UserRepository)
 	service := user.NewService(mockUserRepo)
 
 	email := "user"
@@ -126,7 +126,7 @@ func TestService_AuthenticateUser(t *testing.T) {
 // TODO: AuthenticateUser fail case
 
 func TestService_ValidateToken_Success(t *testing.T) {
-	mockUserRepo := user.NewMockUserRepository(t)
+	mockUserRepo := new(mocks.UserRepository)
 	service := user.NewService(mockUserRepo)
 
 	email := "test@example.com"
@@ -150,7 +150,7 @@ func TestService_ValidateToken_Success(t *testing.T) {
 }
 
 func TestService_ValidateToken_InvalidToken(t *testing.T) {
-	mockUserRepo := user.NewMockUserRepository(t)
+	mockUserRepo := new(mocks.UserRepository)
 	service := user.NewService(mockUserRepo)
 
 	user, err := service.ValidateToken("invalidToken")
@@ -161,7 +161,7 @@ func TestService_ValidateToken_InvalidToken(t *testing.T) {
 }
 
 func TestService_ValidateToken_UserNotFound(t *testing.T) {
-	mockUserRepo := user.NewMockUserRepository(t)
+	mockUserRepo := new(mocks.UserRepository)
 	service := user.NewService(mockUserRepo)
 
 	email := "notfound@example.com"
