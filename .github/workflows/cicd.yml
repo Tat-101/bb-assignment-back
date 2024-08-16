@@ -118,5 +118,5 @@ jobs:
       - name: Deploy to Cloud Run
         run: |
           gcloud run deploy my-golang-app \
-            --image docker.io/iamtatat/bb-back:latest
+            --image docker.io/iamtatat/bb-back:latest \
             --region us-central1
