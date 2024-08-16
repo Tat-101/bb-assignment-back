@@ -1,0 +1,40 @@
+name: cd
+
+on:
+  push:
+    branches:
+      - main
+# on:
+#   workflow_run:
+#     workflows: ["ci"]
+#     types:
+#       - completed
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: "read"
+      id-token: "write"
+
+    steps:
+      - id: "auth"
+        uses: "google-github-actions/auth@v2"
+        with:
+          credentials_json: "${{ secrets.GOOGLE_CREDENTIALS }}"
+
+      - name: "Set up Cloud SDK"
+        uses: "google-github-actions/setup-gcloud@v2"
+        with:
+          version: ">= 363.0.0"
+
+      - name: "Use gcloud CLI"
+        run: "gcloud info"
+
+      # - name: Deploy to Cloud Run
+      #   run: |
+      #     gcloud run deploy my-go-app \
+      #       --image docker.io/${{ secrets.DOCKERHUB_USERNAME }}/my-go-app:${{ env.TAG_NAME }} \
+      #       --region ${{ secrets.GCP_REGION }} \
+      #       --platform managed \
+      #       --allow-unauthenticated
