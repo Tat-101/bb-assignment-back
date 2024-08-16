@@ -1,6 +1,7 @@
 package main
 
 import (
+	"strings"
 	"time"
 
 	"github.com/gin-contrib/cors"
@@ -28,13 +29,24 @@ func main() {
 
 	r := gin.Default()
 	r.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"http://localhost:*", "https://bb-assignment-front.pages.dev/*"},
+		// AllowOrigins:     []string{"http://localhost:*", "https://bb-assignment-front.pages.dev*"},
+		AllowOriginFunc: func(origin string) bool {
+			// Allow any localhost origin regardless of port
+			if strings.HasPrefix(origin, "http://localhost:") {
+				return true
+			}
+			// Allow specific production origin
+			if origin == "https://bb-assignment-front.pages.dev" {
+				return true
+			}
+			return false
+		},
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE"},
 		AllowHeaders:     []string{"Content-Type", "Authorization"},
 		ExposeHeaders:    []string{"Content-Length"},
 		AllowCredentials: true,
-		AllowWildcard:    true,
-		MaxAge:           12 * time.Hour,
+		// AllowWildcard:    true,
+		MaxAge: 12 * time.Hour,
 	}))
 
 	userService := user.NewService(userRepo)
