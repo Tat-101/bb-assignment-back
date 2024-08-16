@@ -14,6 +14,8 @@ func Initialize(cfg config.Config) *gorm.DB {
 	config.LoadConfig()
 
 	dsn := cfg.GetDBConfig()
+
+	// fmt.Println("dsn", dsn)
 	database, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 		log.Fatalf("failed to connect database: %v", err)
