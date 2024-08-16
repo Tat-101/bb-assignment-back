@@ -1,97 +1,101 @@
 name: ci/cd
 
 on:
-  release:
-    types: [published]
+  push:
+    branches:
+      - main
+# on:
+#   release:
+#     types: [published]
 
 jobs:
-  test:
-    runs-on: ubuntu-latest
-    services:
-      db:
-        image: postgres:latest
-        env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: password
-          POSTGRES_DB: bb-assignment
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd "pg_isready -U postgres"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+  # test:
+  #   runs-on: ubuntu-latest
+  #   services:
+  #     db:
+  #       image: postgres:latest
+  #       env:
+  #         POSTGRES_USER: postgres
+  #         POSTGRES_PASSWORD: password
+  #         POSTGRES_DB: bb-assignment
+  #       ports:
+  #         - 5432:5432
+  #       options: >-
+  #         --health-cmd "pg_isready -U postgres"
+  #         --health-interval 10s
+  #         --health-timeout 5s
+  #         --health-retries 5
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v3
 
-      - name: Set up Go
-        uses: actions/setup-go@v4
-        with:
-          go-version: "1.22"
+  #     - name: Set up Go
+  #       uses: actions/setup-go@v4
+  #       with:
+  #         go-version: "1.22"
 
-      - name: Install dependencies
-        run: go mod download
+  #     - name: Install dependencies
+  #       run: go mod download
 
-      - name: "Create env file"
-        run: |
-          touch .env
-          echo DB_HOST=localhost >> .env
-          echo DB_USER=postgres >> .env
-          echo DB_PASSWORD=password >> .env
-          echo DB_NAME=bb-assignment >> .env
-          cat .env
+  #     - name: "Create env file"
+  #       run: |
+  #         touch .env
+  #         echo DB_HOST=localhost >> .env
+  #         echo DB_USER=postgres >> .env
+  #         echo DB_PASSWORD=password >> .env
+  #         echo DB_NAME=bb-assignment >> .env
+  #         cat .env
 
-      - name: Run tests and generate coverage report
-        run: go test -v -coverprofile=coverage.out ./...
+  #     - name: Run tests and generate coverage report
+  #       run: go test -v -coverprofile=coverage.out ./...
 
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v4.0.1
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          files: ./coverage.out
-          flags: unittests
-          name: codecov-umbrella
-          fail_ci_if_error: true
+  #     - name: Upload coverage to Codecov
+  #       uses: codecov/codecov-action@v4.0.1
+  #       with:
+  #         token: ${{ secrets.CODECOV_TOKEN }}
+  #         files: ./coverage.out
+  #         flags: unittests
+  #         name: codecov-umbrella
+  #         fail_ci_if_error: true
 
-  push_to_registry:
-    needs: test
-    name: Push to Docker Hub
-    runs-on: ubuntu-latest
-    steps:
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+  # push_to_registry:
+  #   needs: test
+  #   name: Push to Docker Hub
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Set up Docker Buildx
+  #       uses: docker/setup-buildx-action@v3
 
-      - name: Extract metadata (tags, labels) for Docker
-        id: meta
-        uses: docker/metadata-action@v5
-        with:
-          images: iamtatat/bb-back
-          tags: type=semver,pattern={{version}}
+  #     - name: Extract metadata (tags, labels) for Docker
+  #       id: meta
+  #       uses: docker/metadata-action@v5
+  #       with:
+  #         images: iamtatat/bb-back
+  #         tags: type=semver,pattern={{version}}
 
-      - name: Login to Docker Hub
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+  #     - name: Login to Docker Hub
+  #       uses: docker/login-action@v3
+  #       with:
+  #         username: ${{ secrets.DOCKERHUB_USERNAME }}
+  #         password: ${{ secrets.DOCKERHUB_PASSWORD }}
 
-      - name: Build and push Docker image
-        id: push
-        uses: docker/build-push-action@v6
-        with:
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+  #     - name: Build and push Docker image
+  #       id: push
+  #       uses: docker/build-push-action@v6
+  #       with:
+  #         push: true
+  #         tags: ${{ steps.meta.outputs.tags }}
+  #         labels: ${{ steps.meta.outputs.labels }}
 
-      # - name: Generate artifact attestation
-      #   uses: actions/attest-build-provenance@v1
-      #   with:
-      #     subject-name: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME}}
-      #     subject-digest: ${{ steps.push.outputs.digest }}
-      #     push-to-registry: true
+  #     # - name: Generate artifact attestation
+  #     #   uses: actions/attest-build-provenance@v1
+  #     #   with:
+  #     #     subject-name: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME}}
+  #     #     subject-digest: ${{ steps.push.outputs.digest }}
+  #     #     push-to-registry: true
 
   deploy:
-    needs: push_to_registry
+    # needs: push_to_registry
     name: Deploy to GCP
     runs-on: ubuntu-latest
     permissions:
@@ -115,3 +119,4 @@ jobs:
         run: |
           gcloud run deploy my-golang-app \
             --image docker.io/iamtatat/bb-back:latest
+            --region us-central1
