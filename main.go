@@ -1,6 +1,8 @@
 package main
 
 import (
+	"net/http"
+	"os"
 	"strings"
 	"time"
 
@@ -48,6 +50,12 @@ func main() {
 		// AllowWildcard:    true,
 		MaxAge: 12 * time.Hour,
 	}))
+	version := os.Getenv("API_VERSION")
+	r.GET("/version", func(c *gin.Context) {
+		c.JSON(http.StatusOK, gin.H{
+			"version": version,
+		})
+	})
 
 	userService := user.NewService(userRepo)
 	rest.NewUserHandler(r, userService)
