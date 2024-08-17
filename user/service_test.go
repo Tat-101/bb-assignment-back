@@ -123,7 +123,26 @@ func TestService_AuthenticateUser(t *testing.T) {
 	mockUserRepo.AssertExpectations(t)
 }
 
-// TODO: AuthenticateUser fail case
+func TestService_AuthenticateUser_Fail(t *testing.T) {
+	mockUserRepo := new(mocks.UserRepository)
+	service := user.NewService(mockUserRepo)
+
+	email := "user"
+	password := "wrongpassword"
+
+	expectedUser := &domain.User{
+		Email:    "user@example.com",
+		Password: "$2a$10$12345678901234567890123456789012345678901234567890",
+	}
+
+	mockUserRepo.On("GetUserByEmail", email).Return(expectedUser, nil)
+
+	token, err := service.AuthenticateUser(email, password)
+
+	assert.Error(t, err)
+	assert.Empty(t, token)
+	mockUserRepo.AssertExpectations(t)
+}
 
 func TestService_ValidateToken_Success(t *testing.T) {
 	mockUserRepo := new(mocks.UserRepository)
