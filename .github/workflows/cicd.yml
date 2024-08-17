@@ -123,4 +123,4 @@ jobs:
           gcloud run deploy my-golang-app \
             --image docker.io/iamtatat/bb-back:${{ needs.push_to_registry.outputs.image_version }} \
             --region us-central1 \
-            --set-env-vars API_VERSION=${{ needs.push_to_registry.outputs.image_version }}
+            --update-env-vars API_VERSION=${{ needs.push_to_registry.outputs.image_version }}
