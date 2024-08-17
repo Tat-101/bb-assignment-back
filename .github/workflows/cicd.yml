@@ -10,6 +10,7 @@ on:
 
 jobs:
   test:
+    name: Test
     runs-on: ubuntu-latest
     services:
       db:
@@ -87,10 +88,6 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
 
-      # TODO: remove
-      - name: Log meta
-        run: echo ${{ steps.meta.outputs }}
-
       # - name: Generate artifact attestation
       #   uses: actions/attest-build-provenance@v1
       #   with:
@@ -119,9 +116,13 @@ jobs:
       - name: "Use gcloud CLI"
         run: "gcloud info"
 
+      # TODO: remove
+      - name: echo outputs
+        run: echo ${{ needs.push_to_registry.outputs.image_version }}
+
       - name: Deploy to Cloud Run
         run: |
           gcloud run deploy my-golang-app \
-            --image docker.io/iamtatat/bb-back:${{ steps.meta.outputs.tags }} \
+            --image docker.io/iamtatat/bb-back:${{ needs.push_to_registry.outputs.image_tag }} \
             --region us-central1 \
-            --set-env-vars API_VERSION=${{ steps.meta.outputs.version }}
+            --set-env-vars API_VERSION=${{ needs.push_to_registry.outputs.image_version }}
