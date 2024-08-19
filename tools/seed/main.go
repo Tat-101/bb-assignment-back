@@ -5,5 +5,6 @@ import (
 )
 
 func main() {
+	// Seed the database with an admin user
 	seed.SeedAdminUser()
 }
