@@ -18,8 +18,15 @@ jobs:
     outputs:
       image_version: ${{ env.DOCKER_METADATA_OUTPUT_VERSION }}
     steps:
-      - name: Checkout
+      - name: Checkout the repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Fetch all history so we can access tags
+
+      - name: Check out the correct tag
+        run: |
+          TAG_NAME=$(git describe --tags --abbrev=0)
+          git checkout $TAG_NAME
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
