@@ -15,6 +15,7 @@ type Config struct {
 	DBPort        string
 	ServerAddress string
 	JWTSecret     string
+	Version       string
 }
 
 // LoadEnv loads env vars from .env
@@ -45,6 +46,7 @@ func LoadConfig() Config {
 		DBPort:        getEnv("DB_PORT", "5432"),
 		ServerAddress: getEnv("SERVER_ADDRESS", "3000"),
 		JWTSecret:     getEnv("JWT_SECRET", "my_secret"),
+		Version:       getEnv("API_VERSION", "v0"),
 	}
 }
 
